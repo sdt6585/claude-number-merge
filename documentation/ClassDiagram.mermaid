@@ -1,0 +1,107 @@
+classDiagram
+    class App {
+        -log(level, message, data)
+        +initialize()
+    }
+    
+    class Config {
+        +logLevel: String
+        +rows: Number
+        +cols: Number
+        +initialValues: Array
+        +colors: Array
+        +blockSize: Number
+        +levelUpGap: Number
+        +undoCooldown: Number
+        +valueDistribution: Object
+        +animationDuration: Object
+    }
+    
+    class GameModel {
+        -state: Object
+        +storePreviousState()
+        +getRandomValue()
+        +getBlockColor(value)
+        +formatNumber(num)
+        +calculateMergeValue(blocks)
+        +areBlocksAdjacent(block1, block2)
+        +isBlockInSelection(block)
+        +resetSelection()
+        +calculateTargetValue()
+        +shouldLevelUp(value)
+        +calculateLevelsToIncrease(value)
+        +levelUp(levelsToIncrease)
+        +updateUndoAvailability()
+        +getLogicalPosition(visualRow, col)
+        +getVisualPosition(logicalRow, col)
+    }
+    
+    class GameView {
+        -model: GameModel
+        -gameBoard: HTMLElement
+        -scoreDisplay: HTMLElement
+        -levelDisplay: HTMLElement
+        -mergeValueDisplay: HTMLElement
+        -levelUpDisplay: HTMLElement
+        -undoButton: HTMLElement
+        -resetButton: HTMLElement
+        -canvas: HTMLCanvasElement
+        -ctx: CanvasRenderingContext2D
+        -currentTargetDisplay: HTMLElement
+        -nextLevelDisplay: HTMLElement
+        +resizeCanvas()
+        +initializeBoard()
+        +updateScoreDisplay()
+        +updateLevelDisplay()
+        +updateHighestValueDisplay()
+        +updateTargetDisplays()
+        +showMergeValue(value)
+        +hideMergeValue()
+        +showLevelUp(levelsToIncrease)
+        +drawConnectionLines(currentX, currentY)
+        +clearConnectionLines()
+        +selectBlock(block)
+        +deselectAllBlocks()
+        +delay(ms)
+        +animateMerge(lastBlock, otherBlocks, mergeValue)
+        +animateFallingBlocks(moves)
+        +animateNewBlocks(newBlocks)
+        +updateUndoButton()
+        +restoreBoardFromState(previousState)
+        +updateAllBlockColors()
+    }
+    
+    class GameController {
+        -model: GameModel
+        -view: GameView
+        -app: App
+        -isDragging: Boolean
+        -lastX: Number
+        -lastY: Number
+        +initEventListeners()
+        +startDrag(e)
+        +continueDrag(e)
+        +endDrag(e)
+        +processMerge(mergeValue)
+        +checkForLevelUp(value)
+        +fillEmptySpaces()
+        +getBlockAtPosition(x, y)
+        +selectBlock(block)
+        +resetSelection()
+        +undoLastMove()
+        +saveGameState()
+        +loadGameState()
+        +resetGame()
+        +initGame()
+    }
+    
+    App --> GameModel : creates
+    App --> GameView : creates
+    App --> GameController : creates
+    GameController --> GameModel : uses
+    GameController --> GameView : uses
+    GameController --> App : references
+    GameView --> GameModel : references
+    Config <-- GameModel : uses
+    Config <-- GameView : uses
+    Config <-- GameController : uses
